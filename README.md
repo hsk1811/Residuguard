@@ -1,16 +1,64 @@
-# ResiduGuard — Complete Project Setup & Team Development Guide
+# ResiduGuard
 
-## 1. Project Structure
+### Digital Farm Management, MRL & AMU Compliance and Dairy Traceability System
 
-After cloning the repository, the project should look approximately like this:
+ResiduGuard is a full-stack dairy farm management and traceability platform designed to monitor livestock health, antimicrobial usage (AMU), maximum residue limits (MRL), milk batches, processing batches and consumer-level traceability.
+
+The project currently uses:
+
+- **Frontend:** React + TanStack Start + TypeScript
+- **Backend:** Bun + TypeScript
+- **Database:** PostgreSQL through Supabase
+- **ORM:** Prisma 7
+- **Database Adapter:** `@prisma/adapter-pg`
+- **Authentication:** JWT
+- **Styling:** Tailwind CSS
+- **Icons/UI:** Lucide React + custom UI components
+- **Version Control:** Git + GitHub
+
+> **Current development phase:** The main application is being made fully functional first. Blockchain integration will be added later.
+
+---
+
+# 1. Repository
+
+GitHub repository:
+
+```text
+https://github.com/hsk1811/Residuguard
+```
+
+Clone it using:
+
+```powershell
+git clone https://github.com/hsk1811/Residuguard.git
+```
+
+Then:
+
+```powershell
+cd ResiduGuard
+```
+
+Check the repository:
+
+```powershell
+git status
+```
+
+---
+
+# 2. Project Structure
+
+The project is organized approximately as follows:
 
 ```text
 ResiduGuard/
 │
-├── src/                         # Frontend
-│   ├── routes/
-│   ├── components/
-│   ├── lib/
+├── src/                              # Frontend
+│   ├── routes/                       # TanStack routes/pages
+│   ├── components/                   # Reusable UI components
+│   ├── lib/                          # API, session and application utilities
 │   └── ...
 │
 ├── public/
@@ -18,73 +66,103 @@ ResiduGuard/
 ├── backend/
 │   ├── src/
 │   │   ├── lib/
-│   │   │   └── prisma.ts
+│   │   │   └── prisma.ts             # Prisma client
+│   │   │
 │   │   ├── routes/
-│   │   │   └── cattle.ts
-│   │   ├── server.ts
-│   │   └── test-db.ts
+│   │   │   ├── auth.ts               # Login/Register
+│   │   │   └── cattle.ts             # Cattle API
+│   │   │
+│   │   ├── server.ts                 # Bun API server
+│   │   └── test-db.ts                # Database connection test
 │   │
 │   ├── prisma/
-│   │   ├── schema.prisma
-│   │   ├── seed.ts
-│   │   └── migrations/
+│   │   ├── schema.prisma             # Database schema
+│   │   ├── seed.ts                   # Demo data
+│   │   └── migrations/               # Database migrations
 │   │
-│   ├── generated/               # Generated automatically
-│   ├── .env                     # Local only — DO NOT push
+│   ├── generated/                    # Generated Prisma client
+│   ├── .env                          # LOCAL ONLY — DO NOT PUSH
 │   ├── .env.example
 │   ├── prisma7.config.ts
 │   └── package.json
 │
-├── .gitignore
-├── README.md
 ├── package.json
-└── ...
+├── bun.lock
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-# 2. Prerequisites
+# 3. Prerequisites
 
-Every team member should install the following:
+Install the following before setting up the project.
 
 ### Required
 
-* Git
-* Bun
-* Node.js
-* PostgreSQL
-* pgAdmin 4
-* VS Code
+- Git
+- Bun
+- Node.js
+- VS Code
+- Supabase account/access to the project
 
-Check installations:
+PostgreSQL itself does **not** need to be installed locally when using the shared Supabase database.
+
+---
+
+# 4. Check Required Installations
+
+Open PowerShell.
+
+### Git
 
 ```powershell
 git --version
 ```
 
+### Bun
+
 ```powershell
 bun --version
 ```
+
+### Node.js
 
 ```powershell
 node --version
 ```
 
+A successful setup should show versions for all three.
+
+---
+
+# 5. Install Bun
+
+If Bun is not installed:
+
 ```powershell
-psql --version
+powershell -c "irm bun.sh/install.ps1 | iex"
+```
+
+Close and reopen PowerShell after installation.
+
+Then verify:
+
+```powershell
+bun --version
 ```
 
 ---
 
-# 3. Clone the GitHub Repository
+# 6. Clone the Repository
 
-Each team member should clone the project.
+Run:
 
 ```powershell
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/hsk1811/Residuguard.git
 ```
 
-Go inside the project:
+Go into the project:
 
 ```powershell
 cd ResiduGuard
@@ -96,11 +174,9 @@ Check:
 git status
 ```
 
-The repository should be clean.
-
 ---
 
-# 4. Install Frontend Dependencies
+# 7. Install Frontend Dependencies
 
 From the project root:
 
@@ -112,52 +188,9 @@ This installs the frontend dependencies.
 
 ---
 
-# 5. Setup PostgreSQL
+# 8. Setup Backend Dependencies
 
-Each team member needs their own local PostgreSQL database.
-
-The PostgreSQL server does **not** need to be uploaded to GitHub.
-
-Open:
-
-```text
-pgAdmin 4
-```
-
-Connect to the local PostgreSQL server.
-
-Create a database called:
-
-```text
-Residuguard
-```
-
-### Using pgAdmin
-
-Go to:
-
-```text
-Servers
-→ PostgreSQL
-→ Databases
-→ Right Click
-→ Create
-→ Database
-```
-
-Database name:
-
-```text
-Residuguard
-```
-
-Save it.
-
----
-
-# 6. Setup Backend
-
-Go to the backend:
+Go into the backend:
 
 ```powershell
 cd backend
@@ -169,158 +202,210 @@ Install backend dependencies:
 bun install
 ```
 
----
-
-# 7. Create Backend Environment File
-
-Inside:
-
-```text
-backend/
-```
-
-there should be:
-
-```text
-.env.example
-```
-
-Copy it to:
-
-```text
-.env
-```
-
-PowerShell:
+After installation, go back to the project root:
 
 ```powershell
+cd ..
+```
+
+---
+
+# 9. Database — Supabase
+
+The current ResiduGuard backend uses **PostgreSQL hosted through Supabase**.
+
+The database is not stored inside the GitHub repository.
+
+The Prisma schema and migrations are stored in the repository, while the actual database is hosted by Supabase.
+
+The project currently uses:
+
+```text
+Supabase
+    ↓
+PostgreSQL
+    ↓
+Prisma 7
+    ↓
+Bun Backend
+```
+
+---
+
+# 10. Environment Variables
+
+The backend requires a local environment file:
+
+```text
+backend/.env
+```
+
+This file is intentionally excluded from GitHub.
+
+There is a template:
+
+```text
+backend/.env.example
+```
+
+Copy it:
+
+```powershell
+cd backend
 Copy-Item .env.example .env
 ```
 
-Open:
+Then open:
 
 ```text
 backend/.env
 ```
 
-Set your own PostgreSQL connection string.
+---
 
-Example:
+# 11. Configure `backend/.env`
+
+The backend requires the following configuration:
 
 ```env
-DATABASE_URL="postgresql://YOUR_USERNAME:YOUR_PASSWORD@localhost:5432/Residuguard"
+DATABASE_URL="YOUR_SUPABASE_DATABASE_URL"
+DIRECT_URL="YOUR_SUPABASE_DIRECT_DATABASE_URL"
+JWT_SECRET="YOUR_PRIVATE_JWT_SECRET"
 ```
 
-Use the PostgreSQL username and password configured on **your own computer**.
+### Important
 
-Do not use another team member's password.
+Do **not** copy the actual secrets into the README.
 
----
-
-# 8. Important — Never Push `.env`
-
-The following files/folders must NOT be pushed to GitHub:
+Do not commit:
 
 ```text
 backend/.env
-backend/node_modules/
-backend/generated/
-node_modules/
-dist/
 ```
 
-The `.gitignore` should contain:
+to GitHub.
 
-```gitignore
-# Dependencies
-node_modules/
-backend/node_modules/
-
-# Environment files
-.env
-backend/.env
-
-# Generated Prisma client
-backend/generated/
-
-# Build output
-dist/
-dist-ssr/
-.output/
-```
+The project owner/team lead should provide the required private environment values to team members through a secure/private channel.
 
 ---
 
-# 9. Install Prisma Dependencies
+# 12. Why There Are Two Database URLs
 
-The backend uses Prisma with PostgreSQL.
+ResiduGuard uses two PostgreSQL connection URLs.
 
-The required packages are already present in the project.
+### `DATABASE_URL`
 
-If necessary:
+Used by the application at runtime.
+
+It connects Prisma to the Supabase PostgreSQL database through the configured connection pool.
+
+### `DIRECT_URL`
+
+Used by Prisma migrations.
+
+The Prisma configuration uses:
+
+```text
+DIRECT_URL
+```
+
+for database migrations.
+
+This separation allows the application runtime and Prisma migration workflow to use the appropriate PostgreSQL connection.
+
+---
+
+# 13. JWT Secret
+
+Authentication uses JWT tokens.
+
+The backend requires:
+
+```env
+JWT_SECRET="YOUR_PRIVATE_JWT_SECRET"
+```
+
+The JWT secret is used by the backend to sign authentication tokens.
+
+Never commit the real JWT secret to GitHub.
+
+---
+
+# 14. Verify `.env` Is Ignored
+
+From the project root:
+
+```powershell
+git check-ignore -v backend/.env
+```
+
+You should see something similar to:
+
+```text
+backend/.gitignore:19:.env backend/.env
+```
+
+If `.env` is not ignored, **do not push anything** until the `.gitignore` is fixed.
+
+---
+
+# 15. Prisma Setup
+
+Go into the backend:
 
 ```powershell
 cd backend
 ```
 
-```powershell
-bun install
-```
-
-The project uses:
-
-```text
-Prisma
-@prisma/adapter-pg
-pg
-dotenv
-```
-
----
-
-# 10. Create the Database Tables
-
-Make sure you are inside:
-
-```text
-backend/
-```
-
-Run:
-
-```powershell
-bunx prisma migrate dev
-```
-
-This creates the database tables based on:
-
-```text
-backend/prisma/schema.prisma
-```
-
-It also applies the committed Prisma migrations.
-
----
-
-# 11. Generate Prisma Client
-
-Run:
+Generate the Prisma client:
 
 ```powershell
 bunx prisma generate
 ```
 
-This generates the Prisma client inside:
+The generated client is created under:
 
 ```text
 backend/generated/
 ```
 
-This folder is automatically generated and should not be pushed to GitHub.
+This folder is generated automatically and should not be committed.
 
 ---
 
-# 12. Seed the Database
+# 16. Run Database Migrations
+
+Make sure:
+
+```text
+backend/.env
+```
+
+contains valid Supabase connection details.
+
+Then run:
+
+```powershell
+bunx prisma migrate dev
+```
+
+This applies the committed Prisma migrations to the database.
+
+The schema is located at:
+
+```text
+backend/prisma/schema.prisma
+```
+
+Migrations are located at:
+
+```text
+backend/prisma/migrations/
+```
+
+---
+
+# 17. Seed the Database
 
 Run:
 
@@ -328,50 +413,38 @@ Run:
 bunx prisma db seed
 ```
 
-This inserts demo data into the local database.
+The seed creates demo data used during development and testing.
 
-The seed contains sample:
+The seed includes sample application records such as:
 
-* Farmer
-* Cattle
-* Veterinarian
-* Collection Centre
-* Factory
+- Users
+- Farmers
+- Cattle
+- Treatments
+- Veterinarian-related records
+- Collection-centre-related records
+- Factory-related records
 
-Example farmer:
+A demo farmer currently exists for development/testing.
+
+Example:
 
 ```text
+Name:
 Ramesh Patil
+
+Email:
+ramesh@residuguard.demo
+
+Password:
+demo1234
 ```
 
-Example cattle:
-
-```text
-CATTLE-001
-CATTLE-002
-```
-
-Example veterinarian:
-
-```text
-Dr. Anjali Sharma
-```
-
-Example collection centre:
-
-```text
-Pune Milk Collection Centre
-```
-
-Example factory:
-
-```text
-Pune Dairy Processing Factory
-```
+> Demo credentials are for development only. Do not use them in production.
 
 ---
 
-# 13. Test PostgreSQL Connection
+# 18. Test the Database Connection
 
 From:
 
@@ -385,18 +458,20 @@ run:
 bun src/test-db.ts
 ```
 
-Expected output:
+A successful connection should indicate that PostgreSQL/Supabase is reachable.
 
-```text
-PostgreSQL connection successful!
-Users: [...]
-```
+If the connection fails, check:
 
-If you see this, your PostgreSQL + Prisma connection is working.
+1. `backend/.env`
+2. `DATABASE_URL`
+3. `DIRECT_URL`
+4. Supabase project availability
+5. Internet connection
+6. Whether the password contains special characters that need URL encoding
 
 ---
 
-# 14. Start the Backend
+# 19. Start the Backend
 
 From:
 
@@ -416,7 +491,7 @@ Expected output:
 ResiduGuard backend running at http://localhost:3000
 ```
 
-The backend is now running at:
+The backend API is available at:
 
 ```text
 http://localhost:3000
@@ -424,7 +499,28 @@ http://localhost:3000
 
 ---
 
-# 15. Test the Cattle API
+# 20. Backend API
+
+The backend currently exposes APIs such as:
+
+### Authentication
+
+```text
+POST /api/auth/login
+POST /api/auth/register
+```
+
+### Cattle
+
+```text
+GET /api/cattle
+```
+
+Additional APIs will be added as the remaining modules are implemented.
+
+---
+
+# 21. Test the Cattle API
 
 Open another PowerShell terminal.
 
@@ -434,59 +530,153 @@ Run:
 Invoke-RestMethod http://localhost:3000/api/cattle
 ```
 
-You should receive the cattle data from PostgreSQL.
+You should receive cattle records from the PostgreSQL database.
 
-The API currently available is:
+---
+
+# 22. Authentication
+
+ResiduGuard currently supports farmer authentication.
+
+The authentication flow is:
 
 ```text
-GET /api/cattle
+Farmer
+   ↓
+Register
+   ↓
+POST /api/auth/register
+   ↓
+User + Farmer record created
+   ↓
+Login
+   ↓
+POST /api/auth/login
+   ↓
+Password verification
+   ↓
+JWT generated
+   ↓
+Frontend stores authentication information
+   ↓
+Farmer Dashboard
 ```
 
 ---
 
-# 16. Start the Frontend
+# 23. Farmer Registration
+
+Farmers can create an account through:
+
+```text
+/register
+```
+
+Registration currently collects:
+
+```text
+Full Name
+Phone Number
+Email Address
+Password
+Confirm Password
+Village
+Farm / Organization Name
+```
+
+The backend creates:
+
+```text
+User
+   +
+Farmer
+```
+
+The farmer is assigned the role:
+
+```text
+FARMER
+```
+
+---
+
+# 24. Farmer Login
+
+The login page is:
+
+```text
+/login
+```
+
+The frontend sends:
+
+```text
+email
+password
+```
+
+to:
+
+```text
+POST /api/auth/login
+```
+
+The backend verifies the credentials and returns a JWT.
+
+The frontend stores:
+
+```text
+residuguard.token
+residuguard.user
+```
+
+in browser local storage.
+
+---
+
+# 25. Start the Frontend
 
 Open another terminal.
 
-Go back to the project root:
-
-```powershell
-cd ..
-```
-
-If necessary:
+From the project root:
 
 ```powershell
 cd ResiduGuard
 ```
 
-Start the frontend:
+Run:
 
 ```powershell
 bun run dev
 ```
 
-The terminal will show the frontend URL, usually something similar to:
+The TanStack development server will display the local URL.
+
+The current development setup normally uses:
 
 ```text
-http://localhost:3000
+http://localhost:8081
 ```
 
-or another Vite/TanStack development port.
-
-Open the URL shown in the terminal.
+Always use the URL shown by the terminal if the port changes.
 
 ---
 
-# 17. Running the Complete Project
+# 26. Running the Complete Project
 
-You normally need **two terminals**.
+Normally use **two terminals**.
 
 ### Terminal 1 — Backend
 
 ```powershell
-cd ResiduGuard/backend
+cd ResiduGuard\backend
 bun src/server.ts
+```
+
+Backend:
+
+```text
+http://localhost:3000
 ```
 
 ### Terminal 2 — Frontend
@@ -496,194 +686,277 @@ cd ResiduGuard
 bun run dev
 ```
 
-Keep both terminals running.
+Frontend:
+
+```text
+http://localhost:8081
+```
+
+Keep both terminals running while developing.
 
 ---
 
-# 18. Database Workflow
+# 27. Complete Setup From Scratch
 
-The database is **local for every developer**.
-
-GitHub stores:
+For a new team member, the complete process is:
 
 ```text
-schema.prisma
-migrations/
-seed.ts
-```
-
-GitHub does NOT store:
-
-```text
-actual PostgreSQL database
-PostgreSQL data
-.env
-database password
-```
-
-Therefore, when a new team member clones the repository, they recreate the database using:
-
-```powershell
-bunx prisma migrate dev
-```
-
-and:
-
-```powershell
-bunx prisma db seed
-```
-
----
-
-# 19. How the Backend Connects to PostgreSQL
-
-The connection flow is:
-
-```text
-Frontend
-   │
-   │ HTTP API
-   ▼
-Bun Backend
-   │
-   │ Prisma
-   ▼
-Prisma PostgreSQL Adapter
-   │
-   ▼
-PostgreSQL
-   │
-   ▼
-Residuguard Database
-```
-
-The main Prisma connection file is:
-
-```text
-backend/src/lib/prisma.ts
+1. Install Git
+        ↓
+2. Install Bun
+        ↓
+3. Install Node.js
+        ↓
+4. Clone GitHub repository
+        ↓
+5. bun install
+        ↓
+6. cd backend
+        ↓
+7. bun install
+        ↓
+8. Create backend/.env
+        ↓
+9. Add Supabase DATABASE_URL
+        ↓
+10. Add Supabase DIRECT_URL
+        ↓
+11. Add JWT_SECRET
+        ↓
+12. bunx prisma generate
+        ↓
+13. bunx prisma migrate dev
+        ↓
+14. bunx prisma db seed
+        ↓
+15. bun src/test-db.ts
+        ↓
+16. bun src/server.ts
+        ↓
+17. Open second terminal
+        ↓
+18. bun run dev
+        ↓
+19. Open frontend
+        ↓
+20. Test Login/Register
 ```
 
 ---
 
-# 20. Current Database Architecture
+# 28. Testing Farmer Registration
 
-The main entities are:
+After starting both servers:
+
+### Step 1
+
+Open:
 
 ```text
-User
- │
- └── Farmer
-       │
-       └── Cattle
-             │
-             └── Treatment
-                    │
-                    └── Veterinarian
-
-CollectionCentre
- │
- └── MilkBatch
-       │
-       └── MilkBatchAnimal
-              │
-              └── Cattle
-
-Factory
- │
- └── ProcessingBatch
-       │
-       ├── ProcessingMilkBatch
-       │
-       └── Package
-
-TraceabilityEvent
+http://localhost:8081
 ```
+
+### Step 2
+
+Go to:
+
+```text
+Register / Create Account
+```
+
+### Step 3
+
+Create a farmer account.
+
+Example:
+
+```text
+Name:
+Rahul Patil
+
+Email:
+rahul@example.com
+
+Password:
+Rahul@123
+
+Phone:
+9876543210
+
+Village:
+Kalyan
+
+Organization:
+Patil Dairy Farm
+```
+
+### Step 4
+
+After registration, go to Login.
+
+### Step 5
+
+Enter the newly created email and password.
+
+### Step 6
+
+The backend verifies the account.
+
+### Step 7
+
+The farmer is redirected to the farmer dashboard.
 
 ---
 
-# 21. Project Workflow
+# 29. Current Application Flow
 
 The intended ResiduGuard workflow is:
 
 ```text
-FARMER
-   │
-   ▼
-Register Cattle
-   │
-   ▼
-Cattle Health Records
-   │
-   ▼
-VETERINARIAN
-   │
-   ▼
-Treatment Recorded
-   │
-   ▼
-Withdrawal Period
-   │
-   ▼
-SAFE / HOLD
-   │
-   ▼
-COLLECTION CENTRE
-   │
-   ▼
-Milk Batch Created
-   │
-   ▼
-FACTORY
-   │
-   ▼
-Processing Batch
-   │
-   ▼
-Packages
-   │
-   ▼
-CONSUMER
-   │
-   ▼
-Batch / Package Verification
+                         RESIDUGUARD
+                              │
+          ┌───────────────────┼───────────────────┐
+          │                   │                   │
+       FARMER            VETERINARIAN       CONSUMER
+          │                   │                   │
+          ▼                   ▼                   ▼
+    Register Cattle     Search Cattle       Verify Batch
+          │                   │                   │
+          ▼                   ▼                   │
+    Health Records      Record Treatment         │
+          │                   │                   │
+          └───────────┬───────┘                   │
+                      ▼                           │
+               Withdrawal Period                  │
+                      │                           │
+                SAFE / HOLD                       │
+                      │                           │
+                      ▼                           │
+              COLLECTION CENTRE                  │
+                      │                           │
+                      ▼                           │
+                 Milk Batch                      │
+                      │                           │
+                      ▼                           │
+                   FACTORY                       │
+                      │                           │
+                      ▼                           │
+              Processing Batch                   │
+                      │                           │
+                      ▼                           │
+                  Packages                       │
+                      │                           │
+                      └───────────────► Verification
 ```
 
 ---
 
-# 22. Team Division
+# 30. Main User Roles
 
-There are 3 project members.
+ResiduGuard is designed around multiple roles.
+
+### Farmer
+
+Responsibilities:
+
+- Manage farmer profile
+- Register cattle
+- View cattle
+- View cattle health records
+- View treatments
+- Monitor withdrawal status
+- View milk-related records
+
+### Veterinarian
+
+Responsibilities:
+
+- Search cattle
+- View cattle health history
+- Record treatments
+- Record medicine
+- Record dosage
+- Record treatment reason
+- Monitor withdrawal periods
+
+### Collection Centre
+
+Responsibilities:
+
+- Check cattle/milk eligibility
+- Create milk batches
+- Record milk volume
+- Link cattle to milk batches
+- Manage batch status
+- Dispatch batches
+
+### Factory
+
+Responsibilities:
+
+- Receive milk batches
+- Create processing batches
+- Process milk
+- Generate packages
+- Manage processing status
+- Dispatch packages
+
+### Authority
+
+Responsibilities:
+
+- Monitor compliance
+- Monitor MRL/AMU information
+- View traceability information
+- Review records
+
+### Consumer
+
+Responsibilities:
+
+- Verify milk/product batch
+- View traceability information
+- Check product journey
+
+---
+
+# 31. Team Development Structure
+
+The project can be divided among three team members.
 
 ## Member 1 — Farmer + Veterinarian
 
 ### Frontend
 
-Work on:
+Main files:
 
 ```text
 src/routes/farmer.tsx
 src/routes/veterinarian.tsx
 ```
 
-Implement:
+Responsibilities:
 
-* Farmer dashboard
-* Farmer profile
-* Add cattle
-* Edit cattle
-* View cattle
-* Cattle details
-* Cattle health history
-* Veterinarian dashboard
-* Search cattle
-* View cattle history
-* Record treatment
-* Treatment history
-* Withdrawal status
+```text
+Farmer dashboard
+Farmer profile
+Add cattle
+Edit cattle
+View cattle
+Cattle details
+Cattle health history
+
+Veterinarian dashboard
+Search cattle
+View cattle history
+Record treatment
+Treatment history
+Withdrawal status
+```
 
 ### Backend
 
-Work mainly with:
+Main models:
 
 ```text
 User
@@ -706,54 +979,58 @@ PUT    /api/cattle/:id
 
 GET    /api/cattle/:id/treatments
 POST   /api/treatments
-
-GET    /api/veterinarians/:id
 ```
 
 ---
 
-# 23. Member 2 — Collection Centre + Factory
+# 32. Member 2 — Collection Centre + Factory
 
 ### Frontend
 
-Work on:
+Main files:
 
 ```text
 src/routes/collection-centre.tsx
 src/routes/factory.tsx
 ```
 
-Implement:
-
 ### Collection Centre
 
-* Dashboard
-* Cattle eligibility
-* SAFE/HOLD status
-* Select cattle
-* Create milk batch
-* Generate batch ID
-* Record milk volume
-* Link cattle to milk batch
-* View milk batches
-* Update batch status
-* Dispatch batch
+Responsibilities:
+
+```text
+Dashboard
+Cattle eligibility
+SAFE/HOLD status
+Select cattle
+Create milk batch
+Generate batch ID
+Record milk volume
+Link cattle to milk batch
+View milk batches
+Update batch status
+Dispatch batch
+```
 
 ### Factory
 
-* Incoming milk batches
-* Select milk batches
-* Create processing batch
-* Product information
-* Processing volume
-* Number of packs
-* Processing status
-* Package generation
-* Dispatch
+Responsibilities:
+
+```text
+Incoming milk batches
+Select milk batches
+Create processing batch
+Product information
+Processing volume
+Number of packs
+Processing status
+Package generation
+Dispatch
+```
 
 ### Backend
 
-Work mainly with:
+Main models:
 
 ```text
 CollectionCentre
@@ -765,274 +1042,77 @@ ProcessingMilkBatch
 Package
 ```
 
-Potential APIs:
-
-```text
-GET    /api/milk-batches
-GET    /api/milk-batches/:id
-POST   /api/milk-batches
-PUT    /api/milk-batches/:id
-
-GET    /api/processing-batches
-GET    /api/processing-batches/:id
-POST   /api/processing-batches
-PUT    /api/processing-batches/:id
-
-GET    /api/packages
-GET    /api/packages/:id
-POST   /api/packages
-```
-
 ---
 
-# 24. Member 3 — Consumer + Authority
+# 33. Member 3 — Consumer + Authority
 
 ### Consumer
 
-Work on:
+Main frontend:
 
 ```text
 src/routes/verify.tsx
 ```
 
-Implement:
+Responsibilities:
 
 ```text
-Enter Batch ID / Package ID
-          │
-          ▼
-Search Backend
-          │
-          ▼
-Find Package
-          │
-          ▼
-Find Processing Batch
-          │
-          ▼
-Find Milk Batch
-          │
-          ▼
-Find Collection Centre
-          │
-          ▼
-Find Contributing Cattle
-          │
-          ▼
-Display Traceability Information
+Batch verification
+Package verification
+Traceability timeline
+Milk batch information
+Processing information
+Product information
 ```
 
-Consumer should be able to see information such as:
+### Authority
 
-```text
-Product
-Package ID
-Processing Batch
-Milk Batch
-Collection Centre
-Factory
-Source Cattle
-Milk Collection Date
-Safety Status
-```
-
----
-
-# 25. Authority Module
-
-Work on:
+Main frontend:
 
 ```text
 src/routes/authority.tsx
 ```
 
-Authority dashboard should provide system-level information:
+Responsibilities:
 
 ```text
-Total Farmers
-Total Cattle
-Total Veterinarians
-Total Treatments
-SAFE Milk Batches
-HOLD Milk Batches
-Processing Batches
-Packages
+Compliance dashboard
+MRL reference register
+AMU monitoring
+Treatment monitoring
+Withdrawal violations
+Farm monitoring
+Traceability monitoring
 ```
 
-Also provide:
+### Backend
+
+Potential models:
 
 ```text
-HOLD cases
-Recent treatments
-Recent milk batches
-Recent processing batches
+Authority
+TraceabilityEvent
+MRLReference
+ComplianceRecord
 ```
 
 ---
 
-# 26. Authentication
+# 34. Git Workflow
 
-The current login system is still demo/mock authentication.
-
-Current roles:
-
-```text
-FARMER
-VETERINARIAN
-COLLECTION_CENTRE
-FACTORY
-AUTHORITY
-CONSUMER
-```
-
-The login frontend currently uses demo credentials and session state.
-
-Later, backend authentication should be implemented.
-
-Possible future flow:
-
-```text
-Login
-  │
-  ▼
-POST /api/auth/login
-  │
-  ▼
-Verify email/password
-  │
-  ▼
-Return session/token
-  │
-  ▼
-Frontend stores authenticated session
-  │
-  ▼
-Role-based dashboard
-```
-
-Do not let each member create a separate authentication system.
-
----
-
-# 27. Important Rule for Database Changes
-
-If someone changes:
-
-```text
-backend/prisma/schema.prisma
-```
-
-they must create a Prisma migration.
-
-Example:
-
-```powershell
-bunx prisma migrate dev --name add_something
-```
-
-Then commit the migration:
-
-```text
-backend/prisma/migrations/
-```
-
-Other team members then pull the changes and run:
-
-```powershell
-bunx prisma migrate dev
-```
-
-Do **not** manually modify another developer's local PostgreSQL database and expect the change to appear on GitHub.
-
----
-
-# 28. Important Rule for Seed Data
-
-If demo data needs to change, modify:
-
-```text
-backend/prisma/seed.ts
-```
-
-Then run:
-
-```powershell
-bunx prisma db seed
-```
-
-Do not commit your local database contents.
-
----
-
-# 29. Git Workflow for the Team
-
-Do not have everyone directly work on `main`.
-
-Each member should create their own branch.
-
-Example:
-
-### Member 1
-
-```powershell
-git checkout -b feature/farmer-veterinarian
-```
-
-### Member 2
-
-```powershell
-git checkout -b feature/collection-factory
-```
-
-### Member 3
-
-```powershell
-git checkout -b feature/consumer-authority
-```
-
----
-
-# 30. Before Starting Work
-
-Always pull the latest changes:
-
-```powershell
-git checkout main
-```
+Before starting work:
 
 ```powershell
 git pull origin main
 ```
 
-Then switch back to your branch:
-
-```powershell
-git checkout feature/your-branch
-```
-
-Update your branch if required:
-
-```powershell
-git merge main
-```
-
----
-
-# 31. After Completing Work
-
-Check changed files:
+Check status:
 
 ```powershell
 git status
 ```
 
-Review changes:
-
-```powershell
-git diff
-```
-
-Add files:
+After making changes:
 
 ```powershell
 git add .
@@ -1041,231 +1121,367 @@ git add .
 Commit:
 
 ```powershell
-git commit -m "Implement farmer cattle management"
+git commit -m "Describe your changes"
 ```
 
 Push:
 
 ```powershell
-git push -u origin feature/farmer-veterinarian
+git push origin main
 ```
 
-Then create a Pull Request on GitHub.
+> The current team workflow is working directly on `main` unless the team later decides to introduce feature branches.
 
 ---
 
-# 32. Before Every Commit
+# 35. Important Git Rules
 
-Make sure you are NOT committing:
+### DO
 
 ```text
-.env
+Pull before starting work
+Test your changes
+Commit meaningful changes
+Push working code
+Keep migrations in Git
+Keep seed.ts updated
+Communicate before changing shared database schema
+```
+
+### DO NOT
+
+```text
+Push backend/.env
+Push passwords
+Push JWT secrets
+Push API keys
+Push node_modules
+Push generated Prisma client
+Delete another person's migrations
+Commit broken code
+```
+
+---
+
+# 36. Files That Must Stay Private / Ignored
+
+These should not be pushed:
+
+```text
+backend/.env
 node_modules/
 backend/node_modules/
 backend/generated/
+dist/
+dist-ssr/
+.output/
 ```
 
-Check:
-
-```powershell
-git status --ignored
-```
-
-You should never see the PostgreSQL password staged for commit.
+The `.gitignore` is already configured for these types of files.
 
 ---
 
-# 33. Pulling Another Member's Changes
+# 37. Important Database Rule
 
-After their Pull Request is merged into `main`:
+Do not directly connect the frontend to PostgreSQL.
 
-```powershell
-git checkout main
-```
-
-```powershell
-git pull origin main
-```
-
-Then update your branch:
-
-```powershell
-git checkout feature/your-branch
-```
-
-```powershell
-git merge main
-```
-
-If the database schema changed:
-
-```powershell
-cd backend
-```
-
-```powershell
-bunx prisma migrate dev
-```
-
-Then:
-
-```powershell
-bunx prisma generate
-```
-
----
-
-# 34. API Development Rules
-
-Frontend should communicate with the backend through API endpoints.
-
-Do not directly access PostgreSQL from React.
-
-Correct:
+Correct architecture:
 
 ```text
-React
-  ↓
-API
-  ↓
-Bun Backend
-  ↓
-Prisma
-  ↓
-PostgreSQL
+React / TanStack Frontend
+          │
+          │ HTTP API
+          ▼
+     Bun Backend
+          │
+          │ Prisma
+          ▼
+      PostgreSQL
+       (Supabase)
 ```
 
 Incorrect:
 
 ```text
 React
-  ↓
-PostgreSQL
+  │
+  └──────► PostgreSQL
+```
+
+All database operations should go through the backend/API layer.
+
+---
+
+# 38. Prisma Workflow
+
+When changing the Prisma schema:
+
+```text
+backend/prisma/schema.prisma
+```
+
+After modifying the schema, create a migration:
+
+```powershell
+cd backend
+bunx prisma migrate dev --name describe_change
+```
+
+Then generate Prisma client:
+
+```powershell
+bunx prisma generate
+```
+
+Test the backend before pushing.
+
+---
+
+# 39. Example Schema Change Workflow
+
+Example:
+
+```text
+1. Modify schema.prisma
+        ↓
+2. bunx prisma migrate dev --name add_new_field
+        ↓
+3. bunx prisma generate
+        ↓
+4. Update backend API
+        ↓
+5. Update frontend
+        ↓
+6. Test
+        ↓
+7. git add .
+        ↓
+8. git commit
+        ↓
+9. git push
 ```
 
 ---
 
-# 35. Frontend API File
+# 40. Adding a New API
 
-Keep frontend API calls organized in:
+Backend APIs are implemented inside:
+
+```text
+backend/src/routes/
+```
+
+For example:
+
+```text
+backend/src/routes/cattle.ts
+backend/src/routes/auth.ts
+```
+
+Then register the route in:
+
+```text
+backend/src/server.ts
+```
+
+The frontend communicates with the API through:
 
 ```text
 src/lib/api.ts
 ```
 
-For example:
+---
 
-```ts
-export async function fetchCattle() {
-  const response = await fetch(
-    "http://localhost:3000/api/cattle",
-  );
+# 41. Frontend API Communication
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch cattle");
-  }
+Frontend API functions should be kept in:
 
-  return response.json();
-}
+```text
+src/lib/api.ts
 ```
 
-As APIs are added, keep them organized in this file or split them into separate API modules if it becomes large.
+Example architecture:
+
+```text
+React Page
+    ↓
+src/lib/api.ts
+    ↓
+HTTP Request
+    ↓
+Bun Backend
+    ↓
+Prisma
+    ↓
+Supabase PostgreSQL
+```
+
+Avoid putting database logic directly inside React components.
 
 ---
 
-# 36. Current Backend API
+# 42. Authentication Architecture
 
-Currently implemented:
+Current authentication architecture:
 
 ```text
-GET /api/cattle
+Register
+   ↓
+Frontend
+   ↓
+POST /api/auth/register
+   ↓
+Bun Backend
+   ↓
+Password Hash
+   ↓
+Prisma
+   ↓
+User + Farmer
+   ↓
+PostgreSQL
 ```
 
-The backend server runs on:
+Login:
+
+```text
+Login Form
+   ↓
+POST /api/auth/login
+   ↓
+Find User
+   ↓
+Verify Password
+   ↓
+Create JWT
+   ↓
+Return Token + User
+   ↓
+Frontend
+   ↓
+Store Session Information
+```
+
+---
+
+# 43. Demo Login
+
+For development/testing, the seed currently provides:
+
+```text
+Email:
+ramesh@residuguard.demo
+
+Password:
+demo1234
+```
+
+Use the demo account only for testing.
+
+For normal farmer testing, create a new account through:
+
+```text
+/register
+```
+
+---
+
+# 44. Current Backend Ports
+
+Backend:
+
+```text
+3000
+```
+
+URL:
 
 ```text
 http://localhost:3000
 ```
 
-More APIs will be added as the modules are completed.
+Frontend development server:
+
+```text
+8081
+```
+
+URL:
+
+```text
+http://localhost:8081
+```
+
+If TanStack chooses another available port, use the URL shown in the terminal.
 
 ---
 
-# 37. CORS
+# 45. Common Problems
 
-The backend already allows the frontend to communicate with it during local development.
+## Problem 1 — `bun` is not recognized
 
-The backend includes CORS headers for:
+Install Bun and restart PowerShell.
 
-```text
-GET
-POST
-PUT
-DELETE
-OPTIONS
+Check:
+
+```powershell
+bun --version
 ```
-
-If the frontend shows:
-
-```text
-Failed to fetch
-```
-
-check that the backend is running.
 
 ---
 
-# 38. Troubleshooting — PostgreSQL Connection Error
+## Problem 2 — Prisma cannot connect
 
-If you get:
-
-```text
-DATABASE_URL is not defined
-```
-
-check:
+Check:
 
 ```text
 backend/.env
 ```
 
-Make sure it contains:
-
-```env
-DATABASE_URL="postgresql://YOUR_USERNAME:YOUR_PASSWORD@localhost:5432/Residuguard"
-```
-
----
-
-# 39. Troubleshooting — Database Does Not Exist
-
-If Prisma says the database does not exist:
-
-Open pgAdmin and create:
+Verify:
 
 ```text
-Residuguard
+DATABASE_URL
+DIRECT_URL
 ```
 
-Then run:
-
-```powershell
-cd backend
-bunx prisma migrate dev
-```
+Make sure the Supabase database is available.
 
 ---
 
-# 40. Troubleshooting — Prisma Client Error
+## Problem 3 — JWT error
 
-Run:
+Check:
 
-```powershell
-cd backend
-bunx prisma generate
+```text
+JWT_SECRET
 ```
 
-Then restart the backend:
+in:
+
+```text
+backend/.env
+```
+
+Restart the backend after changing environment variables.
+
+---
+
+## Problem 4 — Port 3000 already in use
+
+Find the process:
+
+```powershell
+netstat -ano | findstr :3000
+```
+
+Then terminate the process if necessary:
+
+```powershell
+taskkill /PID <PID> /F
+```
+
+Restart:
 
 ```powershell
 bun src/server.ts
@@ -1273,440 +1489,228 @@ bun src/server.ts
 
 ---
 
-# 41. Troubleshooting — Backend API Not Working
+## Problem 5 — Frontend route type errors after adding a route
 
-Check whether the backend is running:
+TanStack generates:
 
-```powershell
-cd backend
-bun src/server.ts
+```text
+src/routeTree.gen.ts
 ```
 
-Then test:
+If the generated route tree becomes stale, stop the frontend server, delete:
 
-```powershell
-Invoke-RestMethod http://localhost:3000/api/cattle
+```text
+src/routeTree.gen.ts
 ```
 
-If this works but the frontend does not, check the frontend API URL.
-
----
-
-# 42. Troubleshooting — Frontend Cannot Fetch Backend
-
-Make sure both are running.
-
-### Backend
+and restart:
 
 ```powershell
-cd backend
-bun src/server.ts
-```
-
-### Frontend
-
-```powershell
-cd ResiduGuard
 bun run dev
 ```
 
-Then refresh the browser.
+TanStack will regenerate the route tree.
 
 ---
 
-# 43. Troubleshooting — Migration Problems
+## Problem 6 — CORS error
 
-If a team member has an outdated local database, first try:
+The backend currently allows frontend requests through CORS.
+
+Make sure the backend is running:
+
+```text
+http://localhost:3000
+```
+
+and restart the backend if `server.ts` was changed.
+
+---
+
+# 46. Useful Commands
+
+### Install dependencies
+
+```powershell
+bun install
+```
+
+### Start frontend
+
+```powershell
+bun run dev
+```
+
+### Start backend
 
 ```powershell
 cd backend
+bun src/server.ts
+```
+
+### Generate Prisma client
+
+```powershell
+bunx prisma generate
+```
+
+### Create/apply development migration
+
+```powershell
 bunx prisma migrate dev
 ```
 
-If the local database is only development/test data and can safely be deleted:
-
-```powershell
-bunx prisma migrate reset
-```
-
-Then:
+### Seed database
 
 ```powershell
 bunx prisma db seed
 ```
 
-**Do not use `migrate reset` on a database containing important real data.**
+### Test database
 
----
+```powershell
+bun src/test-db.ts
+```
 
-# 44. Troubleshooting — Git Conflicts
-
-If Git reports a conflict:
+### Check Git
 
 ```powershell
 git status
 ```
 
-Open the conflicted files and resolve them.
-
-Then:
+### Pull latest changes
 
 ```powershell
-git add .
+git pull origin main
 ```
 
-```powershell
-git commit
-```
-
-If the conflict occurs while merging:
+### Push changes
 
 ```powershell
-git merge --continue
+git push origin main
 ```
 
 ---
 
-# 45. Development Order
+# 47. Development Checklist
 
-The project should be completed in phases.
-
-## Phase 1 — Database + Backend Foundation
-
-Complete:
+Before starting development:
 
 ```text
-PostgreSQL
+[ ] Git installed
+[ ] Bun installed
+[ ] Node.js installed
+[ ] Repository cloned
+[ ] Frontend dependencies installed
+[ ] Backend dependencies installed
+[ ] backend/.env created
+[ ] Supabase DATABASE_URL configured
+[ ] Supabase DIRECT_URL configured
+[ ] JWT_SECRET configured
+[ ] Prisma client generated
+[ ] Database migrations applied
+[ ] Database seeded
+[ ] Database connection tested
+[ ] Backend running
+[ ] Frontend running
+```
+
+---
+
+# 48. Final Project Architecture
+
+```text
+                    RESIDUGUARD
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+          FRONTEND                BACKEND
+              │                     │
+      React + TanStack          Bun + TypeScript
+              │                     │
+              │                 Prisma 7
+              │                     │
+              └──────────┬──────────┘
+                         │
+                     PostgreSQL
+                         │
+                      Supabase
+```
+
+---
+
+# 49. Current Development Priority
+
+The current priority is:
+
+```text
+Make the complete application functional
+              ↓
+Connect frontend + backend
+              ↓
+Complete role-based workflows
+              ↓
+Complete database operations
+              ↓
+Integration testing
+              ↓
+Add blockchain traceability
+```
+
+Blockchain is **not the current implementation dependency**.
+
+The application should first work correctly using:
+
+```text
+React/TanStack
+       +
+Bun
+       +
 Prisma
-Database schema
-Seed data
-Basic APIs
+       +
+PostgreSQL/Supabase
 ```
+
+Blockchain integration can then be added on top of the working system.
 
 ---
 
-## Phase 2 — Farmer + Veterinarian
+# 50. Quick Start — New Team Member
 
-Complete:
-
-```text
-Farmer
-   ↓
-Cattle
-   ↓
-Veterinarian
-   ↓
-Treatment
-   ↓
-Withdrawal Period
-   ↓
-SAFE / HOLD
-```
-
----
-
-## Phase 3 — Collection Centre
-
-Complete:
-
-```text
-Cattle eligibility
-        ↓
-Select SAFE cattle
-        ↓
-Create Milk Batch
-        ↓
-Generate Batch ID
-        ↓
-Link cattle
-        ↓
-Record volume
-        ↓
-Batch status
-```
-
----
-
-## Phase 4 — Factory
-
-Complete:
-
-```text
-Milk Batch
-    ↓
-Factory
-    ↓
-Processing Batch
-    ↓
-Product
-    ↓
-Packages
-```
-
----
-
-## Phase 5 — Consumer
-
-Complete:
-
-```text
-Package ID / Batch ID
-        ↓
-Backend lookup
-        ↓
-Processing Batch
-        ↓
-Milk Batch
-        ↓
-Collection Centre
-        ↓
-Cattle
-        ↓
-Safety information
-```
-
----
-
-## Phase 6 — Authority
-
-Complete:
-
-```text
-System Dashboard
-       ↓
-Farmers
-Cattle
-Treatments
-Milk Batches
-Processing
-Packages
-HOLD Cases
-```
-
----
-
-# 46. Phase 7 — Full Integration Testing
-
-Before blockchain, test the complete workflow:
-
-```text
-Farmer
-  ↓
-Add Cattle
-  ↓
-Veterinarian
-  ↓
-Record Treatment
-  ↓
-Withdrawal Period
-  ↓
-SAFE / HOLD
-  ↓
-Collection Centre
-  ↓
-Create Milk Batch
-  ↓
-Factory
-  ↓
-Create Processing Batch
-  ↓
-Create Package
-  ↓
-Consumer
-  ↓
-Verify Package / Batch
-```
-
-Every step must use the actual PostgreSQL database.
-
-No mock data should remain in the production workflow.
-
----
-
-# 47. Blockchain — Later Phase
-
-Blockchain is intentionally **parked for now**.
-
-Do not block the current development because of Hyperledger.
-
-First make:
-
-```text
-Frontend
-+
-Backend
-+
-PostgreSQL
-+
-Prisma
-+
-APIs
-```
-
-fully functional.
-
-After the complete workflow works, blockchain can be added.
-
----
-
-# 48. Future Blockchain Architecture
-
-Later the architecture can become:
-
-```text
-Frontend
-    │
-    ▼
-Bun Backend
-    │
-    ├──────────────► PostgreSQL
-    │
-    │
-    └──────────────► Hyperledger Fabric
-                          │
-                          ▼
-                   Blockchain Ledger
-```
-
-PostgreSQL will continue handling the application's normal data.
-
-Hyperledger will provide tamper-evident traceability records.
-
-The existing:
-
-```text
-TraceabilityEvent
-```
-
-model can later be used to connect application events with blockchain transaction IDs.
-
----
-
-# 49. Blockchain Should Record Events Such As
-
-Later, events could include:
-
-```text
-CATTLE_REGISTERED
-TREATMENT_RECORDED
-WITHDRAWAL_STARTED
-WITHDRAWAL_COMPLETED
-MILK_BATCH_CREATED
-MILK_BATCH_DISPATCHED
-PROCESSING_BATCH_CREATED
-PACKAGE_CREATED
-PACKAGE_DISPATCHED
-```
-
-The application should first work without blockchain.
-
----
-
-# 50. Final Team Workflow
-
-Every team member should follow:
-
-```text
-1. Clone repository
-        ↓
-2. Install Bun dependencies
-        ↓
-3. Install PostgreSQL
-        ↓
-4. Create Residuguard database
-        ↓
-5. Create backend/.env
-        ↓
-6. Run Prisma migrations
-        ↓
-7. Generate Prisma client
-        ↓
-8. Seed database
-        ↓
-9. Test database
-        ↓
-10. Start backend
-        ↓
-11. Start frontend
-        ↓
-12. Create feature branch
-        ↓
-13. Develop module
-        ↓
-14. Test module
-        ↓
-15. Commit changes
-        ↓
-16. Push branch
-        ↓
-17. Create Pull Request
-        ↓
-18. Merge into main
-```
-
----
-
-# 51. Quick Start — For a New Team Member
-
-After cloning the repository:
+If everything is already configured and you have received the private environment values:
 
 ```powershell
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/hsk1811/Residuguard.git
 cd ResiduGuard
-```
 
-Install frontend:
-
-```powershell
 bun install
-```
 
-Setup backend:
-
-```powershell
 cd backend
 bun install
+
+Copy-Item .env.example .env
 ```
 
-Create:
+Configure:
 
 ```text
 backend/.env
 ```
 
-with:
-
-```env
-DATABASE_URL="postgresql://YOUR_USERNAME:YOUR_PASSWORD@localhost:5432/Residuguard"
-```
-
-Create the database in PostgreSQL:
+with the private:
 
 ```text
-Residuguard
-```
-
-Run:
-
-```powershell
-bunx prisma migrate dev
+DATABASE_URL
+DIRECT_URL
+JWT_SECRET
 ```
 
 Then:
 
 ```powershell
 bunx prisma generate
-```
-
-Then:
-
-```powershell
+bunx prisma migrate dev
 bunx prisma db seed
-```
-
-Test:
-
-```powershell
 bun src/test-db.ts
 ```
 
@@ -1716,75 +1720,168 @@ Start backend:
 bun src/server.ts
 ```
 
-Open a second terminal and run:
+Open another terminal:
 
 ```powershell
 cd ResiduGuard
 bun run dev
 ```
 
-Now the complete local development environment is ready.
+Open the frontend URL shown in the terminal.
+
+The local ResiduGuard development environment is now ready.
 
 ---
 
-# 52. Important Rules for the Whole Team
-
-### DO
+# 51. Final Team Workflow
 
 ```text
-Use PostgreSQL
-Use Prisma
-Use API endpoints
-Use Git branches
-Commit migrations
-Keep seed.ts updated
-Pull before starting work
-Test before pushing
-Create Pull Requests
-```
-
-### DO NOT
-
-```text
-Push .env
-Push PostgreSQL database files
-Push passwords
-Push node_modules
-Push generated Prisma client
-Directly connect React to PostgreSQL
-Delete another member's migrations
-Work directly on main unnecessarily
+                    CLONE REPOSITORY
+                           │
+                           ▼
+                    INSTALL DEPENDENCIES
+                           │
+                           ▼
+                     CONFIGURE .ENV
+                           │
+                           ▼
+                     SETUP SUPABASE
+                           │
+                           ▼
+                   PRISMA MIGRATIONS
+                           │
+                           ▼
+                       SEED DATA
+                           │
+                           ▼
+                    TEST DATABASE
+                           │
+                           ▼
+                    START BACKEND
+                           │
+                           ▼
+                    START FRONTEND
+                           │
+                           ▼
+                     TEST FEATURES
+                           │
+                           ▼
+                    DEVELOP MODULE
+                           │
+                           ▼
+                       COMMIT
+                           │
+                           ▼
+                         PUSH
+                           │
+                           ▼
+                    TEAM INTEGRATION
+                           │
+                           ▼
+                  COMPLETE RESIDUGUARD
 ```
 
 ---
 
-# 53. Current Project Priority
+# 52. Security Reminder
 
-The current priority is:
+Never put any of the following in GitHub:
 
 ```text
-                 RESIDUGUARD
-                      │
-          ┌───────────┴───────────┐
-          │                       │
-       FRONTEND                BACKEND
-          │                       │
-          │                   PostgreSQL
-          │                       │
-          │                     Prisma
-          │                       │
-          └───────────┬───────────┘
-                      │
-               MAKE EVERYTHING
-                 FUNCTIONAL
-                      │
-                      ▼
-              INTEGRATION TEST
-                      │
-                      ▼
-             ADD BLOCKCHAIN LATER
+Database passwords
+Supabase connection strings containing passwords
+JWT secrets
+API keys
+Private tokens
+Personal credentials
+backend/.env
 ```
 
-**Blockchain is not part of the current implementation phase.**
+If a secret is accidentally committed, consider it compromised and rotate it immediately.
 
-The immediate goal is to make the entire ResiduGuard workflow functional using **React/TanStack frontend + Bun backend + Prisma + PostgreSQL**, with all three team members working on their respective modules.
+---
+
+# 53. Project Status
+
+### Currently implemented
+
+```text
+✓ React/TanStack frontend
+✓ Bun backend
+✓ PostgreSQL/Supabase database
+✓ Prisma 7
+✓ Prisma migrations
+✓ Prisma seed
+✓ Cattle API
+✓ Farmer registration
+✓ Farmer login
+✓ Password hashing
+✓ JWT authentication
+✓ Frontend authentication integration
+✓ Farmer registration page
+✓ Login → Farmer dashboard flow
+```
+
+### In progress
+
+```text
+→ Dynamic farmer dashboard data
+→ Complete farmer module
+→ Complete veterinarian module
+→ Collection centre workflow
+→ Factory workflow
+→ Authority workflow
+→ Consumer verification workflow
+→ Complete traceability workflow
+```
+
+### Planned
+
+```text
+→ Blockchain integration
+→ Hyperledger-based traceability
+→ Immutable traceability events
+→ Production deployment
+```
+
+---
+
+# 54. ResiduGuard Vision
+
+The final system is intended to provide an end-to-end traceability chain:
+
+```text
+FARM
+  │
+  ▼
+CATTLE
+  │
+  ▼
+VETERINARY TREATMENT
+  │
+  ▼
+MRL / AMU MONITORING
+  │
+  ▼
+WITHDRAWAL PERIOD
+  │
+  ▼
+MILK COLLECTION
+  │
+  ▼
+MILK BATCH
+  │
+  ▼
+FACTORY PROCESSING
+  │
+  ▼
+PACKAGE
+  │
+  ▼
+CONSUMER
+  │
+  ▼
+TRACEABILITY VERIFICATION
+```
+
+The goal is to provide a reliable digital record of the dairy supply chain from livestock treatment through final consumer verification.
