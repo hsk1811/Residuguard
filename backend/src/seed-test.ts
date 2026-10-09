@@ -29,13 +29,17 @@ async function main() {
     },
   });
 
-  console.log("Test data created successfully!");
-  console.log({ user, farmer, cattle });
+  console.log("Test data created successfully.", {
+    userId: user.id,
+    role: user.role,
+    farmerId: farmer.id,
+    cattleId: cattle.cattleId,
+  });
 }
 
 main()
-  .catch((error) => {
-    console.error(error);
+  .catch(() => {
+    console.error("Test data setup failed.");
     process.exit(1);
   })
   .finally(async () => {

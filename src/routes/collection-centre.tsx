@@ -1,14 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+
 import { useEffect, useMemo, useState } from "react";
+
 import { toast } from "sonner";
+
 import { Milk, Ban, Truck, Users } from "lucide-react";
 
 import { PortalShell } from "@/components/residuguard/PortalShell";
+
 import { RoleGate } from "@/components/residuguard/RoleGate";
+
 import { StatCard } from "@/components/residuguard/StatCard";
+
 import { StatusBadge } from "@/components/residuguard/StatusBadge";
+
 import { Button } from "@/components/ui/button";
+
 import { Checkbox } from "@/components/ui/checkbox";
+
 import {
   Tabs,
   TabsContent,
@@ -26,6 +35,7 @@ import {
 } from "@/components/ui/table";
 
 import { fetchCattle, type ApiCattle } from "@/lib/api";
+
 import { formatDate, milkBatches } from "@/lib/residuguard-data";
 
 export const Route = createFileRoute("/collection-centre")({
@@ -68,10 +78,10 @@ function CentreDashboard() {
 
   // Load cattle from PostgreSQL through the backend API
   useEffect(() => {
-    fetchCattle()
+    fetchCattle(window.localStorage.getItem("residuguard.token"))
       .then((data) => {
         setCattle(data);
-        setSelected(data.map((cow) => cow.id));
+        setSelected(data.filter((cow) => cow.eligibility === "ELIGIBLE_BY_RECORD").map((cow) => cow.id));
         setError(null);
       })
       .catch((err) => {
@@ -83,23 +93,22 @@ function CentreDashboard() {
       });
   }, []);
 
-  /*
-   * For this first frontend/backend integration:
-   * cattle returned from PostgreSQL are treated as SAFE.
-   *
-   * We will replace this with real withdrawal calculation
-   * using Treatment.withdrawalEnds in the next step.
-   */
   const intake = useMemo(
-    () =>
-      cattle.map((cow) => ({
+    () => cattle.map((cow) => {
+      const eligible = cow.eligibility === "ELIGIBLE_BY_RECORD";
+      return {
         cow,
         wd: {
-          status: "SAFE" as const,
-          reason: "No active withdrawal period recorded.",
-          clearsOn: undefined,
+          status: eligible ? "SAFE" as const : "HOLD" as const,
+          reason: eligible
+            ? "Eligible by recorded treatment dates."
+            : cow.eligibility === "HOLD"
+              ? "An active withdrawal period remains."
+              : "Withdrawal information is missing or inconsistent; eligibility is unverified.",
+          clearsOn: eligible ? undefined : cow.withdrawalEnds.filter((date) => Date.parse(date) > Date.now()).sort().at(-1),
         },
-      })),
+      };
+    }),
     [cattle],
   );
 
@@ -196,8 +205,7 @@ function CentreDashboard() {
                 </h2>
 
                 <p className="text-sm text-muted-foreground">
-                  Animals under an active withdrawal period cannot
-                  be added to a pooled batch.
+                  Sources that are on HOLD or have unverified withdrawal information cannot be selected.
                 </p>
               </div>
 
@@ -254,7 +262,7 @@ function CentreDashboard() {
                         <TableCell>
                           <Checkbox
                             checked={selected.includes(cow.id)}
-                            disabled={wd.status === "HOLD"}
+                            disabled={wd.status !== "SAFE"}
                             onCheckedChange={(value) =>
                               toggle(
                                 cow.id,
@@ -266,7 +274,8 @@ function CentreDashboard() {
                         </TableCell>
 
                         <TableCell className="font-medium">
-                          {cow.cattleId} · {cow.name ?? "Unnamed"}
+                          {cow.cattleId} ·{" "}
+                          {cow.name ?? "Unnamed"}
                         </TableCell>
 
                         <TableCell>
@@ -362,9 +371,7 @@ function CentreDashboard() {
         <TabsContent value="blocked" className="mt-5">
           <div className="grid gap-4 md:grid-cols-2">
             {intake
-              .filter(
-                (record) => record.wd.status === "HOLD",
-              )
+              .filter((record) => record.wd.status === "HOLD")
               .map(({ cow, wd }) => (
                 <div
                   key={cow.id}

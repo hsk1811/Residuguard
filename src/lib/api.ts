@@ -3,31 +3,35 @@ export type ApiCattle = {
   cattleId: string;
   name: string | null;
   breed: string | null;
-  sex: string | null;
+  eligibility: "ELIGIBLE_BY_RECORD" | "HOLD" | "UNVERIFIED";
+  withdrawalEnds: string[];
   farmer: {
     village: string;
     user: {
       name: string;
     };
   };
-  treatments: {
-    id: string;
-    medicineName: string;
-    dosage: string | null;
-    administeredAt: string;
-    withdrawalEnds: string | null;
-    reason: string | null;
-  }[];
 };
 
-export async function fetchCattle(): Promise<ApiCattle[]> {
-  const response = await fetch("http://localhost:3000/api/cattle");
+export async function fetchCattle(token: string | null): Promise<ApiCattle[]> {
+  if (!token) throw new Error("Sign in with an authorized collection centre account to view supplier cattle.");
+  const response = await fetch("http://localhost:3000/api/collection-centre/dashboard", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
 
   if (!response.ok) {
-    throw new Error("Failed to fetch cattle");
+    const result = await response.json().catch(() => null);
+    const message = typeof result === "object" && result !== null && "error" in result && typeof result.error === "string"
+      ? result.error
+      : "Failed to fetch authorized supplier cattle.";
+    throw new Error(message);
   }
 
-  return response.json();
+  const result: unknown = await response.json();
+  if (typeof result !== "object" || result === null || !("sources" in result) || !Array.isArray(result.sources)) {
+    throw new Error("The collection centre API returned an invalid cattle response.");
+  }
+  return result.sources as ApiCattle[];
 }
 
 export type LoginUser = {
@@ -68,7 +72,6 @@ export async function loginUser(
   
   return data;
 }
-
 export type RegisterResponse = {
   message: string;
   user: {
@@ -77,22 +80,51 @@ export type RegisterResponse = {
     email: string;
     role: string;
     organization: string | null;
-    farmer: {
-      id: string;
-      village: string;
-      phone: string;
-    };
   };
+  profile: Record<string, unknown>;
 };
 
-export async function registerUser(data: {
+export type RegisterData = {
+  role:
+    | "FARMER"
+    | "VETERINARIAN"
+    | "COLLECTION_CENTRE"
+    | "FACTORY"
+    | "AUTHORITY";
+
   name: string;
   email: string;
   password: string;
-  phone: string;
-  village: string;
+
   organization?: string;
-}): Promise<RegisterResponse> {
+
+  // Common contact/details
+  phone?: string;
+  address?: string;
+  village?: string;
+
+  // Veterinarian
+  licenseNumber?: string;
+  specialization?: string;
+  clinicName?: string;
+
+  // Collection Centre
+  centreName?: string;
+  registrationNumber?: string;
+
+  // Factory
+  factoryName?: string;
+
+  // Regulatory Authority
+  department?: string;
+  designation?: string;
+  employeeId?: string;
+  officeAddress?: string;
+};
+
+export async function registerUser(
+  data: RegisterData,
+): Promise<RegisterResponse> {
   const response = await fetch(
     "http://localhost:3000/api/auth/register",
     {

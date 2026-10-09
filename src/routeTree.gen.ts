@@ -18,6 +18,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as VerifyRouteImport } from './routes/verify'
 import { Route as VeterinarianRouteImport } from './routes/veterinarian'
+import { Route as VeterinarianRegisterRouteImport } from './routes/veterinarian-register'
+import { Route as RegisterIndexRouteImport } from './routes/register/index'
+import { Route as RegisterAuthorityRouteImport } from './routes/register/authority'
+import { Route as RegisterCollection_centreRouteImport } from './routes/register/collection_centre'
+import { Route as RegisterFactoryRouteImport } from './routes/register/factory'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -64,6 +69,32 @@ const VeterinarianRoute = VeterinarianRouteImport.update({
   path: '/veterinarian',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VeterinarianRegisterRoute = VeterinarianRegisterRouteImport.update({
+  id: '/veterinarian-register',
+  path: '/veterinarian-register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterIndexRoute = RegisterIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterAuthorityRoute = RegisterAuthorityRouteImport.update({
+  id: '/authority',
+  path: '/authority',
+  getParentRoute: () => RegisterRoute,
+} as any)
+const RegisterCollection_centreRoute =
+  RegisterCollection_centreRouteImport.update({
+    id: '/collection_centre',
+    path: '/collection_centre',
+    getParentRoute: () => RegisterRoute,
+  } as any)
+const RegisterFactoryRoute = RegisterFactoryRouteImport.update({
+  id: '/factory',
+  path: '/factory',
+  getParentRoute: () => RegisterRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -72,9 +103,14 @@ export interface FileRoutesByFullPath {
   '/factory': typeof FactoryRoute
   '/farmer': typeof FarmerRoute
   '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
+  '/register': typeof RegisterRouteWithChildren
   '/verify': typeof VerifyRoute
   '/veterinarian': typeof VeterinarianRoute
+  '/veterinarian-register': typeof VeterinarianRegisterRoute
+  '/register/authority': typeof RegisterAuthorityRoute
+  '/register/collection_centre': typeof RegisterCollection_centreRoute
+  '/register/factory': typeof RegisterFactoryRoute
+  '/register/': typeof RegisterIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -83,9 +119,13 @@ export interface FileRoutesByTo {
   '/factory': typeof FactoryRoute
   '/farmer': typeof FarmerRoute
   '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
   '/verify': typeof VerifyRoute
   '/veterinarian': typeof VeterinarianRoute
+  '/veterinarian-register': typeof VeterinarianRegisterRoute
+  '/register/authority': typeof RegisterAuthorityRoute
+  '/register/collection_centre': typeof RegisterCollection_centreRoute
+  '/register/factory': typeof RegisterFactoryRoute
+  '/register': typeof RegisterIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -95,9 +135,14 @@ export interface FileRoutesById {
   '/factory': typeof FactoryRoute
   '/farmer': typeof FarmerRoute
   '/login': typeof LoginRoute
-  '/register': typeof RegisterRoute
+  '/register': typeof RegisterRouteWithChildren
   '/verify': typeof VerifyRoute
   '/veterinarian': typeof VeterinarianRoute
+  '/veterinarian-register': typeof VeterinarianRegisterRoute
+  '/register/authority': typeof RegisterAuthorityRoute
+  '/register/collection_centre': typeof RegisterCollection_centreRoute
+  '/register/factory': typeof RegisterFactoryRoute
+  '/register/': typeof RegisterIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +156,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify'
     | '/veterinarian'
+    | '/veterinarian-register'
+    | '/register/authority'
+    | '/register/collection_centre'
+    | '/register/factory'
+    | '/register/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -119,9 +169,13 @@ export interface FileRouteTypes {
     | '/factory'
     | '/farmer'
     | '/login'
-    | '/register'
     | '/verify'
     | '/veterinarian'
+    | '/veterinarian-register'
+    | '/register/authority'
+    | '/register/collection_centre'
+    | '/register/factory'
+    | '/register'
   id:
     | '__root__'
     | '/'
@@ -133,6 +187,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/verify'
     | '/veterinarian'
+    | '/veterinarian-register'
+    | '/register/authority'
+    | '/register/collection_centre'
+    | '/register/factory'
+    | '/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -142,9 +201,10 @@ export interface RootRouteChildren {
   FactoryRoute: typeof FactoryRoute
   FarmerRoute: typeof FarmerRoute
   LoginRoute: typeof LoginRoute
-  RegisterRoute: typeof RegisterRoute
+  RegisterRoute: typeof RegisterRouteWithChildren
   VerifyRoute: typeof VerifyRoute
   VeterinarianRoute: typeof VeterinarianRoute
+  VeterinarianRegisterRoute: typeof VeterinarianRegisterRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -212,8 +272,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VeterinarianRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/veterinarian-register': {
+      id: '/veterinarian-register'
+      path: '/veterinarian-register'
+      fullPath: '/veterinarian-register'
+      preLoaderRoute: typeof VeterinarianRegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/': {
+      id: '/register/'
+      path: '/'
+      fullPath: '/register/'
+      preLoaderRoute: typeof RegisterIndexRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/register/authority': {
+      id: '/register/authority'
+      path: '/authority'
+      fullPath: '/register/authority'
+      preLoaderRoute: typeof RegisterAuthorityRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/register/collection_centre': {
+      id: '/register/collection_centre'
+      path: '/collection_centre'
+      fullPath: '/register/collection_centre'
+      preLoaderRoute: typeof RegisterCollection_centreRouteImport
+      parentRoute: typeof RegisterRoute
+    }
+    '/register/factory': {
+      id: '/register/factory'
+      path: '/factory'
+      fullPath: '/register/factory'
+      preLoaderRoute: typeof RegisterFactoryRouteImport
+      parentRoute: typeof RegisterRoute
+    }
   }
 }
+
+interface RegisterRouteChildren {
+  RegisterAuthorityRoute: typeof RegisterAuthorityRoute
+  RegisterCollection_centreRoute: typeof RegisterCollection_centreRoute
+  RegisterFactoryRoute: typeof RegisterFactoryRoute
+  RegisterIndexRoute: typeof RegisterIndexRoute
+}
+
+const RegisterRouteChildren: RegisterRouteChildren = {
+  RegisterAuthorityRoute: RegisterAuthorityRoute,
+  RegisterCollection_centreRoute: RegisterCollection_centreRoute,
+  RegisterFactoryRoute: RegisterFactoryRoute,
+  RegisterIndexRoute: RegisterIndexRoute,
+}
+
+const RegisterRouteWithChildren = RegisterRoute._addFileChildren(
+  RegisterRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -222,9 +335,10 @@ const rootRouteChildren: RootRouteChildren = {
   FactoryRoute: FactoryRoute,
   FarmerRoute: FarmerRoute,
   LoginRoute: LoginRoute,
-  RegisterRoute: RegisterRoute,
+  RegisterRoute: RegisterRouteWithChildren,
   VerifyRoute: VerifyRoute,
   VeterinarianRoute: VeterinarianRoute,
+  VeterinarianRegisterRoute: VeterinarianRegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

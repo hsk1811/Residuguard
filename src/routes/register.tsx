@@ -1,4 +1,3 @@
-
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { ArrowRight, Eye, EyeOff } from "lucide-react";
@@ -66,13 +65,14 @@ function RegisterPage() {
 
     try {
       await registerUser({
-        name,
-        email,
-        password,
-        phone,
-        village,
-        organization,
-      });
+  role: "FARMER",
+  name,
+  email,
+  password,
+  phone,
+  village,
+  organization,
+});
 
       setSuccess(
         "Account created successfully! Redirecting to sign in...",

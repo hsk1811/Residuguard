@@ -38,7 +38,11 @@ model User {
   role         UserRole
   organization String?
 
-  farmer Farmer?
+  farmer           Farmer?
+  veterinarian     Veterinarian?
+  collectionCentre CollectionCentre?
+  factory          Factory?
+  authority        Authority?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,6 +58,7 @@ model Farmer {
 
   user   User     @relation(fields: [userId], references: [id])
   cattle Cattle[]
+  collectionCentreGrants CollectionCentreSupplier[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -62,46 +67,99 @@ model Farmer {
 }
 
 model Veterinarian {
-  id        String  @id @default(uuid())
-  name      String
-  licenseNo String  @unique
-  phone     String?
+  id             String  @id @default(uuid())
+  name           String
+  licenseNo      String  @unique
+  phone          String?
+  userId         String? @unique
+  licenseNumber  String? @unique
+  specialization String?
+  clinicName     String?
+  address        String?
 
+  user User? @relation(fields: [userId], references: [id])
+
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
   treatments Treatment[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   @@map("veterinarians")
 }
 
 model CollectionCentre {
-  id      String  @id @default(uuid())
-  name    String
-  code    String  @unique
-  village String?
-  address String?
+  id                 String  @id @default(uuid())
+  // Nullable during the transition: new registrations do not populate legacy
+  // identifiers whose meaning has not been established. Existing values stay intact.
+  name               String?
+  code               String? @unique
+  village            String?
+  address            String?
+  userId             String? @unique
+  centreName         String?
+  registrationNumber String? @unique
+  phone              String?
 
+  user User? @relation(fields: [userId], references: [id])
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   milkBatches MilkBatch[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  farmerGrants CollectionCentreSupplier[]
 
   @@map("collection_centres")
 }
 
-model Factory {
-  id      String  @id @default(uuid())
-  name    String
-  code    String  @unique
-  address String?
+model CollectionCentreSupplier {
+  id                 String    @id @default(uuid())
+  farmerId           String
+  collectionCentreId String
+  grantedAt          DateTime  @default(now())
+  revokedAt          DateTime?
 
+  farmer           Farmer          @relation(fields: [farmerId], references: [id])
+  collectionCentre CollectionCentre @relation(fields: [collectionCentreId], references: [id])
+
+  @@index([farmerId, revokedAt])
+  @@index([collectionCentreId, revokedAt])
+  @@unique([farmerId, collectionCentreId])
+  @@map("collection_centre_suppliers")
+}
+
+model Factory {
+  id                 String  @id @default(uuid())
+  // Retain old columns without treating them as current registration fields.
+  name               String?
+  code               String? @unique
+  address            String?
+  userId             String? @unique
+  factoryName        String?
+  registrationNumber String? @unique
+  phone              String?
+
+  user User? @relation(fields: [userId], references: [id])
+
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   processingBatches ProcessingBatch[]
+
+  @@map("factories")
+}
+
+model Authority {
+  id            String @id @default(uuid())
+  userId        String @unique
+  department    String
+  designation   String
+  employeeId    String @unique
+  phone         String
+  officeAddress String
+
+  user User @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("factories")
+  @@map("authorities")
 }
 
 model Cattle {
